@@ -27,7 +27,7 @@ classdef ErrorMultiClass < dagnn.ElementWise
       end
       
       
-      [~,predictions] = max(squeeze(inputs{1}),[],1);
+      [~,predictions] = max(gather(squeeze(inputs{1})),[],1);
       
       for c=1:nCls
         obj.nImgPerClass(c) = obj.nImgPerClass(c) + sum(inputs{2}==c);

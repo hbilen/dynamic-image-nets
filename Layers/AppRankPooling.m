@@ -9,6 +9,7 @@ classdef AppRankPooling < dagnn.ElementWise
     end
     
     function [derInputs, derParams] = backward(obj, inputs, params, derOutputs)
+      derInputs = cell(1,2);
       derInputs{1} = vl_nnarpooltemporal(inputs{1},inputs{2},derOutputs{1});
       derParams = {} ;
     end

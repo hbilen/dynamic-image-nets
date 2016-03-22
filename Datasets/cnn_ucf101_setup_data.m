@@ -49,8 +49,8 @@ for d = dir(fullfile(imdb.imageDir, 'v_*'))'
   name{end+1} = d.name;
   names{end+1} = strcat([d.name, filesep], {ims.name}) ;
   labels{end+1} = lab ;
-  fprintf('.') ;
-  if mod(numel(names), 50) == 0, fprintf('\n') ; end
+  if mod(numel(names), 10) == 0, fprintf('.') ; end
+  if mod(numel(names), 500) == 0, fprintf('\n') ; end
   %fprintf('found %s with %d images\n', d.name, numel(ims)) ;
 end
 % names = horzcat(names{:}) ;
@@ -66,9 +66,11 @@ imdb.images.label = labels ;
 %                                                 load train / test splits
 % -------------------------------------------------------------------------
 
+fprintf('labeling data...(this may take couple of minutes)') ;
 imdb.images.sets = zeros(3, numel(names)) ;
 setNames = {'train','test'};
 setVal = [1,3];
+
 for s=1:numel(setNames)
   for i=1:3
     trainFl = fullfile(opts.dataDir, 'ucfTrainTestlist',sprintf('%slist%02d.txt',...
@@ -90,6 +92,7 @@ for s=1:numel(setNames)
     end
   end  
 end
+fprintf('\n') ;
 %% ------------------------------------------------------------------------
 %                                                            Postprocessing
 % -------------------------------------------------------------------------

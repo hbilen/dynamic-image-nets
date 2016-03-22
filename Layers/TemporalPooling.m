@@ -12,6 +12,7 @@ classdef TemporalPooling < dagnn.ElementWise
     end
     
     function [derInputs, derParams] = backward(obj, inputs, params, derOutputs)
+      derInputs = cell(1,2);
       derInputs{1} = vl_nnpooltemporal(inputs{1},inputs{2},obj.method,derOutputs{1});
       derParams = {} ;
     end
