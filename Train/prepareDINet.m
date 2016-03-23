@@ -47,7 +47,7 @@ end
 
 
 if strcmp(opts.ARPoolLayer,'conv0')
-  l2param = [3e3 -128 128 0];
+  l2param = [6e3 -128 128 0];
 elseif strcmp(opts.ARPoolLayer,'conv1') || strcmp(opts.ARPoolLayer,'relu1')
   l2param = [8e4 -inf inf 0];
   maxUpdateL2Norm = .02;
@@ -92,4 +92,7 @@ fc6 = find(arrayfun(@(a) strcmp(a.name, 'fc6'), net.layers)==1);
 net.layers(fc6(1)).inputs{1} = 'tempPoolMax';
 
 % add multi-class error
-net.addLayer('errMC',ErrorMultiClass(),{'prediction','label'},'errMC');
+net.addLayer('errMC',ErrorMultiClass(),{'prediction','label'},'mcerr');
+
+% net.addLayer('top1err', dagnn.Loss('loss', 'classerror'), ...
+%   {'prediction','label'}, 'top1err') ;

@@ -23,8 +23,8 @@ opts.reverseDyn = 0; % reverse video frames e.g.[N:-1:1]
 opts.train = struct() ;
 opts.train.gpus = [];
 opts.train.batchSize = 8 ;
-opts.train.numSubBatches = 8 ;
-opts.train.learningRate = 1e-5 * [ones(1,15), 0.1*ones(1,5)];
+opts.train.numSubBatches = 4 ;
+opts.train.learningRate = 1e-4 * [ones(1,10), 0.1*ones(1,5)];
 
 opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
@@ -66,6 +66,8 @@ net.meta.classes.description = imdb.classes.name ;
 % -------------------------------------------------------------------------
 %                                                                     Learn
 % -------------------------------------------------------------------------
+opts.train.train = find(imdb.images.set==1) ;
+opts.train.val = find(imdb.images.set==3) ;
 
 [net, info] = cnn_train_dag_dicnn(net, imdb, getBatchFn(opts, net.meta), ...
                       'expDir', opts.expDir, ...
