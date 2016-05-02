@@ -7,6 +7,8 @@ The analysis work performed with the program(s) must be non-proprietary work. Li
 ### Citing Dynamic Image Networks
 
 If you find the code useful, please cite:
+
+```
 #!latex
 @inproceedings{Bilen2016a,
   author    = "Bilen, H. and Fernando, B. and Gavves, E. and Vedaldi, A. and Gould, S.",
