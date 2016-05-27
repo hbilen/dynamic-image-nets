@@ -12,7 +12,7 @@ opts.expDir  = fullfile('exp', 'UCF101') ;
 opts.modelPath = fullfile('models','imagenet-caffe-ref.mat');
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
-opts.numFetchThreads = 12 ;
+opts.numFetchThreads = 8 ;
 
 opts.lite = false ;
 opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
@@ -22,9 +22,9 @@ opts.split = 1; % data split
 opts.reverseDyn = 0; % reverse video frames e.g.[N:-1:1]
 opts.train = struct() ;
 opts.train.gpus = [];
-opts.train.batchSize = 8 ;
-opts.train.numSubBatches = 4 ;
-opts.train.learningRate = 1e-4 * [ones(1,10), 0.1*ones(1,5)];
+opts.train.batchSize = 	 8;
+opts.train.numSubBatches = 4;
+opts.train.learningRate = 1e-4 * [ones(1,15), 0.1*ones(1,5)];
 
 opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
@@ -34,6 +34,7 @@ if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 % -------------------------------------------------------------------------
 net = load(opts.modelPath);
 net = prepareDINet(net,opts);
+% net = prepareDINetBN(net,opts);
 % -------------------------------------------------------------------------
 %                                                              Prepare data
 % -------------------------------------------------------------------------

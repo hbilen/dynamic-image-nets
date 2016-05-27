@@ -25,7 +25,7 @@ nCls = 101;
 sizeW = size(net.layers{fc8l}.weights{1});
 
 if sizeW(4)~=nCls
-  net.layers{fc8l}.weights = {zeros(sizeW(1),sizeW(2),sizeW(3),nCls,'single'), ...
+  net.layers{fc8l}.weights = {0.01 * randn(sizeW(1),sizeW(2),sizeW(3),nCls,'single'), ...
     zeros(1, nCls, 'single')};
 end
 
