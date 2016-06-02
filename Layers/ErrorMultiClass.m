@@ -1,4 +1,4 @@
-classdef ErrorMultiClass < dagnn.ElementWise
+classdef ErrorMultiClass < dagnn.Loss
   % author: Hakan Bilen
   % computes multi-class accuracy
   % inputs{1} - > scores
@@ -8,7 +8,7 @@ classdef ErrorMultiClass < dagnn.ElementWise
     nImgPerClass = []
     nCorPred = []
     accuracy = []
-    average = 0
+%     average = 0
   end
   
   methods
