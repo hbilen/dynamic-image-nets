@@ -33,6 +33,10 @@ if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 %                                                             Prepare model
 % -------------------------------------------------------------------------
 net = dagnn.DagNN.loadobj(load(opts.modelPath));
+
+% add multi-class error
+net.addLayer('errMC',ErrorMultiClass(),{'prediction','label'},'mcerr');
+
 % -------------------------------------------------------------------------
 %                                                              Prepare data
 % -------------------------------------------------------------------------
