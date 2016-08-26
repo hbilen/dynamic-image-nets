@@ -57,4 +57,11 @@ If you find the code useful, please cite:
     ```matlab
     [net, info] = cnn_dicnn(opts)
     ```
+## Evaluation
 
+1. Download a trained model from the following link:
+https://drive.google.com/open?id=0B0evBVYO74MEa29kZDQ2UlNDS1k
+
+2. Set the appropriate opts parameters (e.g. opts.modelPath)
+
+3. Run info = cnn_dicnn_evaluate(opts)
