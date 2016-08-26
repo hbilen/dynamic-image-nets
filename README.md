@@ -57,6 +57,7 @@ If you find the code useful, please cite:
     ```matlab
     [net, info] = cnn_dicnn(opts)
     ```
+
 ## Evaluation
 
 1. Download a trained model from the following link:
