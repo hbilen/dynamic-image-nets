@@ -132,8 +132,14 @@ VideoId2 = [];
 stepSize = 6;
 % pool nFrames into a dynamic image
 nFrames = 10;
+
 % number of dynamic images to be max pooled later
-nDynImgs = 10;
+% using less nDynImgs leads to a faster training and less overfitting
+if isVal
+  nDynImgs = 5;
+else
+  nDynImgs = 10;
+end
 
 
 c1 = 1;
