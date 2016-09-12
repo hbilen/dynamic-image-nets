@@ -33,8 +33,7 @@ if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 %                                                             Prepare model
 % -------------------------------------------------------------------------
 net = load(opts.modelPath);
-net = prepareDINet(net,opts);
-% net = prepareDINetBN(net,opts);
+net = cnn_dicnn_init(net,opts);
 % -------------------------------------------------------------------------
 %                                                              Prepare data
 % -------------------------------------------------------------------------

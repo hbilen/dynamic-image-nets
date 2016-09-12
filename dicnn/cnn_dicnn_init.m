@@ -48,37 +48,11 @@ end
 
 if strcmp(opts.ARPoolLayer,'conv0')
   l2param = [6e3 -128 128 0];
-elseif strcmp(opts.ARPoolLayer,'conv1') || strcmp(opts.ARPoolLayer,'relu1')
-  l2param = [8e4 -inf inf 0];
-  maxUpdateL2Norm = .02;
-  p = find(arrayfun(@(a) strcmp(a.params, 'conv1f'), net.layers)==1);
-  net.params(p).max_update_norm = maxUpdateL2Norm;
-elseif strcmp(opts.ARPoolLayer,'conv2') || strcmp(opts.ARPoolLayer,'relu2')
-  l2param =  [3e4 -inf inf 0] ;
-  maxUpdateL2Norm = .02;
-  p = find(arrayfun(@(a) strcmp(a.name, 'conv2f'), net.layers)==1);
-  net.params(p).max_update_norm = maxUpdateL2Norm;
-elseif strcmp(opts.ARPoolLayer,'conv3') || strcmp(opts.ARPoolLayer,'relu3')
-  l2param = [700 -inf inf 0];
-  maxUpdateL2Norm = .05;
-  p = find(arrayfun(@(a) strcmp(a.name, 'conv3f'), net.layers)==1);
-  net.params(p).max_update_norm = maxUpdateL2Norm;
-elseif strcmp(opts.ARPoolLayer,'conv4') || strcmp(opts.ARPoolLayer,'relu4')
-  l2param = [7e3 -inf inf 0];
-  maxUpdateL2Norm = .03;
-  p = find(arrayfun(@(a) strcmp(a.name, 'conv4f'), net.layers)==1);
-  net.params(p).max_update_norm = maxUpdateL2Norm;
-elseif strcmp(opts.ARPoolLayer,'conv5')
-  l2param = [6000 -inf inf 0] ;
-  maxUpdateL2Norm = .05;
-  p = find(arrayfun(@(a) strcmp(a.name, 'conv5f'), net.layers)==1);
-  net.params(p).max_update_norm = maxUpdateL2Norm;
+  net.addLayer('l2norm',L2Normalize('scale',l2param(1),'clip',l2param(2:3),...
+    'offset',l2param(4)),'DynImg','DynImgN');
 else
-   error('l2 normalization scale needs to be tuned for approximate rank');
+  net.addLayer('l2norm',dagnn.ReLU(),'DynImg','DynImgN');
 end
-
-net.addLayer('l2norm',L2Normalize('scale',l2param(1),'clip',l2param(2:3),...
-  'offset',l2param(4)),'DynImg','DynImgN');
 
 net.layers(1).inputs{1} = 'DynImgN';
 
