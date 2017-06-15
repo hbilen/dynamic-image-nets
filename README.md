@@ -1,11 +1,5 @@
 # Dynamic Image Networks for Action Recognition
 
-
-## License
-The analysis work performed with the program(s) must be non-proprietary work. Licensee and its contract users must be or be affiliated with an academic facility. Licensee may additionally permit individuals who are students at such academic facility to access and use the program(s). Such students will be considered contract users of licensee. The program(s) may not be used for commercial competitive analysis (such as benchmarking) or for any commercial activity, including consulting.
-
-
-
 ## Installation
 1. Clone the Dynamic Image Net repository:
 
@@ -13,7 +7,7 @@ The analysis work performed with the program(s) must be non-proprietary work. Li
     git clone --recursive  https://github.com/hbilen/dynamic-image-nets
     ```
     
-2. Compile matconvnet toolbox: (see [http://www.vlfeat.org/matconvnet/install/](http://www.vlfeat.org/matconvnet/install/)
+2. Compile matconvnet toolbox: (see [http://www.vlfeat.org/matconvnet/install/](http://www.vlfeat.org/matconvnet/install/))
 
 3. Download your dataset : (e.g. UCF101 from [http://crcv.ucf.edu/data/UCF101.php](http://crcv.ucf.edu/data/UCF101.php))
 
@@ -39,12 +33,12 @@ The analysis work performed with the program(s) must be non-proprietary work. Li
     ```
 
 ## Compute and Visualise Approximate Dynamic Images
-1. If you want to compute approximate dynamic images, try
+1. If you want to compute approximate dynamic images, get a list of ordered frames from a video and try
   ```matlab
   di = compute_approximate_dynamic_images(images) ;
   ```
 
-2. If you want to visualise approximate dynamic images, try
+2. If you want to visualise approximate dynamic images, get a list of ordered frames from a video and try
   ```matlab
   visualize_approximate_dynamic_images(images)
   ```
@@ -76,4 +70,8 @@ If you find the code useful, please cite:
           booktitle = "CVPR",
           year      = "2016"
         }
- 
+## License
+The analysis work performed with the program(s) must be non-proprietary work. Licensee and its contract users must be or be affiliated with an academic facility. Licensee may additionally permit individuals who are students at such academic facility to access and use the program(s). Such students will be considered contract users of licensee. The program(s) may not be used for commercial competitive analysis (such as benchmarking) or for any commercial activity, including consulting.
+
+
+
