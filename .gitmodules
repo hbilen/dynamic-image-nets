@@ -1,3 +1,4 @@
 [submodule "matconvnet"]
 	path = matconvnet
 	url = https://github.com/vlfeat/matconvnet
+	branch = master
