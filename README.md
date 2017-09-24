@@ -1,4 +1,25 @@
 # Dynamic Image Networks for Action Recognition
+## Improved Results (see the extended version of CVPR paper)
+
+
+ResNeXt-50        | HMDB51 | UCF101 |
+------------------|--------|--------|
+SI                |  53.5  |  87.6  |
+DI                |  57.3  |  86.6  |
+OF                |  55.8  |  84.9  |
+DOF               |  58.9  |  86.6  |
+SI+OF             |  67.5  |  93.9  |
+SI+DI             |  61.3  |  90.6  |
+OF+DOF            |  62.6  |  89.1  |
+SI+DI+OF+DOF      |  71.5  |  95.0  |
+SI+DI+OF+DOF+iDT  |  74.2  |  95.4  |
+
+* SI: RGB image
+* DI: dynamic RBG image
+* OF: optical flow 
+* DOF: dynamic optical flow 
+* iDT: improved trajectory features 
+
 
 ## Installation
 1. Clone the Dynamic Image Net repository:
@@ -15,7 +36,6 @@
     
     ```Shell
     data/UCF101/ucfTrainTestlist/
-    ├── classIndFixed.txt
     ├── classInd.txt
     ├── testlist01.txt
     ├── testlist02.txt
@@ -68,6 +88,12 @@ If you find the code useful, please cite:
           author    = "Bilen, H. and Fernando, B. and Gavves, E. and Vedaldi, A. and Gould, S.",
           title     = "Dynamic Image Networks for Action Recognition",
           booktitle = "CVPR",
+          year      = "2016"
+        }
+        @article{Bilen2016c,
+          author    = "Bilen, H. and Fernando, B. and Gavves, E. and Vedaldi, A.",
+          title     = "Action Recognition with Dynamic Image Networks",
+          journal   = "arXiv",
           year      = "2016"
         }
 ## License
