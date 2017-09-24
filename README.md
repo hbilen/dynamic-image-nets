@@ -2,7 +2,7 @@
 ## Improved Results (see the extended version of CVPR paper)
 
 
-ResNeXt-50        | HMDB51 | UCF101 |
+ResNeXt-50        | HMDB51 (%) | UCF101 (%) |
 ------------------|--------|--------|
 SI                |  53.5  |  87.6  |
 DI                |  57.3  |  86.6  |
@@ -14,6 +14,7 @@ OF+DOF            |  62.6  |  89.1  |
 SI+DI+OF+DOF      |  71.5  |  95.0  |
 SI+DI+OF+DOF+iDT  |  74.2  |  95.4  |
 
+* Results are in the standard average multi-class accuracy (%)
 * SI: RGB image
 * DI: dynamic RBG image
 * OF: optical flow 
