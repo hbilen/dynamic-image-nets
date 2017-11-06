@@ -4,7 +4,7 @@ function [net, info] = cnn_single_rgb(varargin)
 
 
 run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', 'matlab', 'vl_setupnn.m')) ;
+  '..', 'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
 addpath Layers Datasets
 
@@ -98,7 +98,7 @@ else
 end
 opts.train.val = find(imdb.images.set==3) ;
 
-[net, info] = cnn_train_dag(net, imdb, getBatchFn(opts, net.meta), ...
+[net, info] = cnn_train_dicnn_dag(net, imdb, getBatchFn(opts, net.meta), ...
                       'expDir', opts.expDir, ...
                       opts.train) ;
 

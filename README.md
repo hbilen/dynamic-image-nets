@@ -31,9 +31,17 @@ SI+DI+OF+DOF+iDT  |  74.2  |  95.4  |
     
 2. Compile matconvnet toolbox: (see [http://www.vlfeat.org/matconvnet/install/](http://www.vlfeat.org/matconvnet/install/))
 
-3. Download your dataset : (e.g. UCF101 from [http://crcv.ucf.edu/data/UCF101.php](http://crcv.ucf.edu/data/UCF101.php))
+3. Install additional matconvnet packages
+    
+  ```Shell
+    run matconvnet/matlab/vl_setupnn.m ;
+    vl_contrib install mcnExtraLayers ; vl_contrib setup mcnExtraLayers ;
+    vl_contrib install autonn ; vl_contrib setup autonn ;
+  ```
 
-4. Convert videos to frames, resize them to 256x256 and store them in such a directory structure:
+4. Download your dataset : (e.g. UCF101 from [http://crcv.ucf.edu/data/UCF101.php](http://crcv.ucf.edu/data/UCF101.php))
+
+5. Convert videos to frames, resize them to 256x256 and store them in such a directory structure:
     
     ```Shell
     data/UCF101/ucfTrainTestlist/
