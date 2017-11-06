@@ -78,7 +78,7 @@ Alternatively, you can download RGB and precomputed optical flow frames from [Ch
 2. Now you can train your model by running 
 
     ```matlab
-    [net, info] = cnn_dicnn(opts)
+    main_train
     ```
 
 
