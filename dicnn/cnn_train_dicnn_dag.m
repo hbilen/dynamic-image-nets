@@ -318,7 +318,7 @@ function state = accumulateGradients(net, state, params, parserv)
 numGpus = numel(params.gpus) ;
 otherGpus = setdiff(1:numGpus, labindex) ;
 
-den = max(numGpus,1) ;
+den = params.numSubBatches * max(numGpus,1) ;
 
 for p=1:numel(net.params)
 
