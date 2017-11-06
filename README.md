@@ -42,6 +42,7 @@ SI+DI+OF+DOF+iDT  |  74.2  |  95.4  |
 4. Download your dataset : (e.g. UCF101 from [http://crcv.ucf.edu/data/UCF101.php](http://crcv.ucf.edu/data/UCF101.php))
 
 5. Convert videos to frames, resize them to 256x256 and store them in such a directory structure:
+Alternatively, you can download RGB and precomputed optical flow frames from [Christoph Feichtenhofer](http://ftp.tugraz.at/pub/feichtenhofer/tsfusion/data/) and copy RGB frames under "UCF101/frames" and optical flow frames under "UCF101/tvl1_flow".
     
     ```Shell
     data/UCF101/ucfTrainTestlist/
@@ -79,14 +80,6 @@ SI+DI+OF+DOF+iDT  |  74.2  |  95.4  |
     ```matlab
     [net, info] = cnn_dicnn(opts)
     ```
-## Evaluation
-
-1. Download a trained model from the following link:
-https://drive.google.com/open?id=0B0evBVYO74MEa29kZDQ2UlNDS1k
-
-2. Set the appropriate opts parameters (e.g. opts.modelPath)
-
-3. Run info = cnn_dicnn_evaluate(opts)
 
 
 ## Citing Dynamic Image Networks
@@ -99,11 +92,11 @@ If you find the code useful, please cite:
           booktitle = "CVPR",
           year      = "2016"
         }
-        @article{Bilen2016c,
+        @journal{Bilen2017a,
           author    = "Bilen, H. and Fernando, B. and Gavves, E. and Vedaldi, A.",
           title     = "Action Recognition with Dynamic Image Networks",
-          journal   = "arXiv",
-          year      = "2016"
+          journal   = " IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)",
+          year      = "2017"
         }
 ## License
 The analysis work performed with the program(s) must be non-proprietary work. Licensee and its contract users must be or be affiliated with an academic facility. Licensee may additionally permit individuals who are students at such academic facility to access and use the program(s). Such students will be considered contract users of licensee. The program(s) may not be used for commercial competitive analysis (such as benchmarking) or for any commercial activity, including consulting.
