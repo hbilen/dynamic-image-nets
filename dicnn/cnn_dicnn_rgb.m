@@ -10,9 +10,9 @@ addpath Layers Datasets
 
 opts.dataDir = fullfile('data','UCF101') ;
 opts.expDir  = fullfile('exp', 'UCF101') ;
-opts.modelPath = fullfile('models','imagenet-caffe-ref.mat');
+opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat.mat');
 opts.datasetFn = @cnn_ucf101_setup_data ;
-opts.networkFn = @cnn_caffenet_init ;
+opts.networkFn = @cnn_resnext_init ;
 
 [opts, varargin] = vl_argparse(opts, varargin) ;
 

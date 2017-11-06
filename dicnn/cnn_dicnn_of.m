@@ -10,7 +10,7 @@ addpath Layers Datasets
 
 opts.dataDir = fullfile('data','UCF101') ;
 opts.expDir  = fullfile('exp', 'UCF101') ;
-opts.modelPath = fullfile('models','imagenet-resnet-50-dag.mat') ;
+opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat.mat') ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 8 ;
@@ -37,7 +37,7 @@ opts.train.solver = [] ;
 opts.train.prefetch = true ;
 opts.train.learningRate = 1e-2 ;
 opts.train.numEpochs = 30 ;
-opts.train.savePreds = true ;
+% opts.train.savePreds = true ;
 opts.train.randomSeed = 0 ;
 
 opts = vl_argparse(opts, varargin) ;

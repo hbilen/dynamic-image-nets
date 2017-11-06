@@ -1,4 +1,4 @@
-function [net, info] = cnn_single_rgb(varargin)
+  function [net, info] = cnn_single_rgb(varargin)
 %CNN_SINGLE_RGB Demonstrates fine-tuning a pre-trained CNN with static 
 % RGB frames (SI in pami journal) on UCF101 dataset
 

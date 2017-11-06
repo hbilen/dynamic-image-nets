@@ -1,4 +1,4 @@
-model = 'resnext50' ; % {'caffenet','resnext50','resnext101'}
+model = 'resnext50' ; % {'cafferef','resnext50','resnext101'}
 input = 'rgb' ; % {'rgb','of'}
 dataset = 'ucf101' ; % {'ucf101','hmdb51'}  hmdb51 requires more iterations to train (add more epochs to learning rate)
 opts.train.batchSize = 128 ;
@@ -23,12 +23,12 @@ elseif strcmp(input,'of')
   trainfn = @cnn_dicnn_of ;
 end
 
-if strcmp(model,'caffenet')  
+if strcmp(model,'cafferef')  
 
   opts.pool1Layer = 'conv1' ;
   % download from http://www.vlfeat.org/matconvnet/models/imagenet-caffe-ref.mat
   opts.modelPath = fullfile('models','imagenet-caffe-ref.mat') ;
-  opts.networkFn = @cnn_init_caffenet ;
+  opts.networkFn = @cnn_init_cafferef ;
   
   if strcmp(input,'rgb')  
     opts.train.learningRate = 1e-3 * [ones(1,2) 0.1*ones(1,2)] ;
