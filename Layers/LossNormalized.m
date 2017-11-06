@@ -1,14 +1,13 @@
-classdef LossNormalized < dagnn.ElementWise
-  properties
-    loss = 'softmaxlog'
-    ignoreAverage = false
-    opts = {}
-  end
-
-  properties (Transient)
-    average = 0
-    numAveraged = 0
-  end
+classdef LossNormalized < dagnn.Loss
+%   properties
+%     loss = 'softmaxlog'
+%     ignoreAverage = false
+%     opts = {}
+%   end
+%   properties (Transient)
+%     average = 0
+%     numAveraged = 0
+%   end
 
   methods
     function outputs = forward(obj, inputs, params)
