@@ -1,39 +1,47 @@
-function [net, info] = cnn_dicnn(varargin)
-%CNN_DICNN Demonstrates fine-tuning a pre-trained CNN on UCF101 dataset
-
+function [net, info] = cnn_single_of(varargin)
+%CNN_SINGLE_OF Demonstrates fine-tuning a pre-trained CNN with static 
+% optical flow (OF in pami journal) on UCF101 dataset
 
 run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', 'matconvnet', 'matlab', 'vl_setupnn.m')) ;
+  '..', 'matlab', 'vl_setupnn.m')) ;
 
 addpath Layers Datasets
 
 opts.dataDir = fullfile('data','UCF101') ;
 opts.expDir  = fullfile('exp', 'UCF101') ;
-opts.modelPath = fullfile('models','imagenet-caffe-ref.mat');
+opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat.mat') ;
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
 opts.numFetchThreads = 8 ;
 
 opts.lite = false ;
-opts.imdbPath = fullfile(opts.expDir, 'imdb.mat');
-opts.ARPoolLayer = 'conv0'; % before conv1
+opts.imdbPath = fullfile(opts.dataDir, 'imdb-of.mat');
+
+opts.DropOutRate = 0.85 ;
+opts.datasetFn = @cnn_ucf101_of_setup_data ;
+opts.networkFn = @cnn_resnext_init ;
 
 opts.split = 1; % data split
 opts.reverseDyn = 0; % reverse video frames e.g.[N:-1:1]
+opts.numDynImgs = 10 ;
+opts.epochFactor = 5 ;
+opts.pool1Layer = 'conv0'; % before conv1
+opts.pool1Type = 'none' ;
+opts.pool2Layer = 'fc6' ;
+
 opts.train = struct() ;
 opts.train.gpus = [];
-opts.train.batchSize = 	 8;
-opts.train.numSubBatches = 4;
-opts.train.learningRate = 1e-4 * [ones(1,15), 0.1*ones(1,5)];
+opts.train.batchSize = 128 ;
+opts.train.numSubBatches = 32 ;
+opts.train.solver = [] ;
+opts.train.prefetch = true ;
+opts.train.learningRate = 1e-2 ;
+opts.train.numEpochs = 30 ;
 
 opts = vl_argparse(opts, varargin) ;
 if ~isfield(opts.train, 'gpus'), opts.train.gpus = []; end;
 
-% -------------------------------------------------------------------------
-%                                                             Prepare model
-% -------------------------------------------------------------------------
-net = load(opts.modelPath);
-net = cnn_dicnn_init(net,opts);
+
 % -------------------------------------------------------------------------
 %                                                              Prepare data
 % -------------------------------------------------------------------------
@@ -41,7 +49,7 @@ net = cnn_dicnn_init(net,opts);
 if exist(opts.imdbPath,'file')
   imdb = load(opts.imdbPath) ;
 else
-  imdb = cnn_ucf101_setup_data('dataDir', opts.dataDir, 'lite', opts.lite) ;
+  imdb = opts.datasetFn('dataDir', opts.dataDir, 'lite', opts.lite) ;
   mkdir(opts.expDir) ;
   save(opts.imdbPath, '-struct', 'imdb') ;
 end
@@ -58,6 +66,19 @@ if opts.reverseDyn
     imdb.images.names{i} = imdb.images.names{i}(end:-1:1);
   end
 end
+% -------------------------------------------------------------------------
+%                                                             Prepare model
+% -------------------------------------------------------------------------
+net = load(opts.modelPath);
+if isfield(net,'net')
+  net = net.net;
+end
+opts.nCls = max(imdb.images.label) ;
+% net = dagnn.DagNN.loadobj(net) ;
+net = opts.networkFn(net,opts) ;
+
+% two channels instead of 3 RGB
+net.params(1).value = net.params(1).value(:,:,1:2,:) ; 
 
 % Set the class names in the network
 net.meta.classes.name = imdb.classes.name ;
@@ -66,23 +87,17 @@ net.meta.classes.description = imdb.classes.name ;
 % -------------------------------------------------------------------------
 %                                                                     Learn
 % -------------------------------------------------------------------------
-opts.train.train = find(imdb.images.set==1) ;
+if opts.epochFactor>0
+  opts.train.train = repmat(find(imdb.images.set==1),[1 opts.epochFactor]) ;
+else
+  opts.train.train = NaN ;
+end
 opts.train.val = find(imdb.images.set==3) ;
 
 [net, info] = cnn_train_dag(net, imdb, getBatchFn(opts, net.meta), ...
                       'expDir', opts.expDir, ...
                       opts.train) ;
 
-% -------------------------------------------------------------------------
-%                                                                    Deploy
-% -------------------------------------------------------------------------
-
-net = cnn_imagenet_deploy(net) ;
-modelPath = fullfile(opts.expDir, 'net-deployed.mat');
-
-net_ = net.saveobj() ;
-save(modelPath, '-struct', 'net_') ;
-clear net_ ;
 
 % -------------------------------------------------------------------------
 function fn = getBatchFn(opts, meta)
@@ -91,12 +106,20 @@ useGpu = numel(opts.train.gpus) > 0 ;
 
 bopts.numThreads = opts.numFetchThreads ;
 bopts.imageSize = meta.normalization.imageSize ;
-bopts.border = meta.normalization.border ;
-% bopts.averageImage = []; 
-bopts.averageImage = meta.normalization.averageImage ;
+if isfield(meta.normalization,'border')
+  bopts.border = meta.normalization.border ;  
+else
+  bopts.border = meta.normalization.imageSize(1:2) ./ ...
+    meta.normalization.cropSize - meta.normalization.imageSize(1:2);
+end
+
+bopts.averageImage = 128 * ones([1 1 2],'single') ;
+bopts.numDynImgs = opts.numDynImgs ;
+% bopts.averageImage = meta.normalization.averageImage ;
 % bopts.rgbVariance = meta.augmentation.rgbVariance ;
 % bopts.transformation = meta.augmentation.transformation ;
-
+bopts.transformation = 'stretch' ;
+bopts.transformation = 'multiScaleRegular' ;
 
 fn = @(x,y) getDagNNBatch(bopts,useGpu,x,y) ;
 
@@ -114,7 +137,7 @@ end
 
 isVal = ~isempty(batch) && imdb.images.set(batch(1)) ~= 1 ;
 
-if ~isVal, transformation='stretch'; else transformation='none';end
+if ~isVal, transformation='multiScaleRegular'; else transformation='none';end
 
 names = imdb.images.names(batch);
 
@@ -130,29 +153,24 @@ VideoId2 = [];
 % step-size
 stepSize = 6;
 % pool nFrames into a dynamic image
-nFrames = 10;
-
+nFrames = 1;
 % number of dynamic images to be max pooled later
-% using less nDynImgs leads to a faster training and less overfitting
-if isVal
-  nDynImgs = 5;
-else
-  nDynImgs = 10;
-end
+nDynImgs = opts.numDynImgs ;
+opts = rmfield(opts,'numDynImgs') ;
 
 
 c1 = 1;
 for v=1:nVids
   
   name = names{v};
-  nFrms = numel(name);
+  nFrms = numel(name)/2;
 
   nSample = nFrames;
   nr = numel(1:stepSize:nFrms);
   
-  % jitter by removing 75 % and limit a batch to nMaxs * nSamples images
-  if nr > 1 && (~isVal || nr>nDynImgs)
-    rat = min(nDynImgs,ceil(0.75*nr));
+  % jitter by removing 50 % and limit a batch to nMaxs * nSamples images
+  if nr > 1 && (~isVal && nr>nDynImgs)
+    rat = min(nDynImgs,ceil(0.50*nr));
     ri = randperm(nr);
     ri = ri(1:rat);
     r = zeros(1,nr);
@@ -167,7 +185,16 @@ for v=1:nVids
   for f=1:stepSize:nFrms
     if r(c3)
       idx = f:min(f+nSample-1,nFrms) ;
-      namesM{end+1} = name(idx);
+      if numel(idx)<nFrames
+        idx = [idx idx(end) * ones(1,nFrames-numel(idx))];
+      end
+      idxu = 2*idx - 1;
+      idxv = 2*idx;
+      idxuv = zeros(1,2 * numel(idxu)) ;
+      idxuv(1:2:end) = idxu ;
+      idxuv(2:2:end) = idxv ;
+            
+      namesM{end+1} = name(idxuv);
       VideoId1 = [VideoId1 c1 * ones(1,numel(idx))];
       c1 = c1 + 1;
       c2 = c2 + 1;
@@ -179,7 +206,7 @@ end
 
 images = strcat([imdb.imageDir filesep], horzcat(namesM{:}) ) ;
 
-im = cnn_video_get_batch(images, VideoId1, opts, ...
+im = cnn_video_of_get_batch(images, VideoId1, opts, ...
   'transformation', transformation, 'prefetch', nargout == 0, ...
   'subMean', false) ;
 
@@ -188,5 +215,6 @@ if nargout > 0
     im = gpuArray(im) ;
   end
   inputs = {'input', im, 'label', imdb.images.label(batch), ...
-    'VideoId1', VideoId1, 'VideoId2', VideoId2};
+    'VideoId2', VideoId2};
+
 end
