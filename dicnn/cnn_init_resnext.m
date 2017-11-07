@@ -113,6 +113,15 @@ net.addLayer('loss', ...
 %------------------------------------------------------------------------%
 net.rebuild()
 
+% replace standard matconvnet bnorm with my version
+bns = find(arrayfun(@(a) strcmp(class(a.block), 'dagnn.BatchNorm'), net.layers)==1);
+for i=1:numel(bns)
+  bb = net.layers(bns(i)).block ;
+  net.layers(bns(i)).block = BatchNormN('numChannels',bb.numChannels,...
+  'epsilon',bb.epsilon,...
+  'opts',bb.opts) ;
+end
+
 % dagMergeBatchNorm(net) ;
 % dagRemoveLayersOfType(net, 'dagnn.BatchNorm') ;
 net_ = net.saveobj ;
