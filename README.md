@@ -81,7 +81,7 @@ Alternatively, you can download RGB and precomputed optical flow frames from [Ch
     main_train
     ```
 ## CNN Models
-The models, that are used in the journal, can be found [here](http://groups.inf.ed.ac.uk/hbilen-data/data/resnext50_dicnn.tar).
+The models for the UCF101 dataset, that are used in the journal, can be found [here](http://groups.inf.ed.ac.uk/hbilen-data/data/resnext50_dicnn.tar).
 
 
 ## Citing Dynamic Image Networks
