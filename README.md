@@ -73,7 +73,7 @@ Alternatively, you can download RGB and precomputed optical flow frames from [Ch
   visualize_approximate_dynamic_images(images)
   ```
 
-## Train 
+## Training 
 1. Write your own `cnn_dataset_setup_data` or `cnn_ucf101_setup_data` to build your database (imdb):
 2. Now you can train your model by running 
 
