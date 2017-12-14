@@ -80,9 +80,19 @@ Alternatively, you can download RGB and precomputed optical flow frames from [Ch
     ```matlab
     main_train
     ```
-## CNN Models
-The models for the UCF101 dataset, that are used in the journal, can be found [here](http://groups.inf.ed.ac.uk/hbilen-data/data/resnext50_dicnn.tar).
-
+## Evaluation
+1. Download the CNN Models for the UCF101 dataset, that are used in the journal, from [here](http://groups.inf.ed.ac.uk/hbilen-data/data/resnext50_dicnn.tar).
+2. Choose the right model, split and input type (e.g.)
+    ```matlab
+    net = load('resnext50-rgb-arpool-split1.mat') ;
+    net = dagnn.DagNN.loadobj(net) ;
+    net.addLayer('errMC',ErrorMultiClass(),{'prediction','label'},'mcerr') ;
+    opts.network = net ;
+    opts.split = 1 ;
+    opts.train.gpus = 1 ;
+    opts.epochFactor = 0 ; 
+    [net, info] = cnn_dicnn_rgb(opts)
+    ```
 
 ## Citing Dynamic Image Networks
 

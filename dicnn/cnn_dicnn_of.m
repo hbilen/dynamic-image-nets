@@ -6,6 +6,12 @@ function [net, info] = cnn_dicnn_of(varargin)
 run(fullfile(fileparts(mfilename('fullpath')), ...
   '..', 'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  '..', 'matconvnet', 'contrib', 'mcnExtraLayers', 'setup_mcnExtraLayers.m')) ;
+
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  '..', 'matconvnet', 'contrib', 'autonn', 'setup_autonn.m')) ;
+
 addpath Layers Datasets
 
 opts.dataDir = fullfile('data','UCF101') ;
@@ -22,7 +28,8 @@ opts.pool1Type = 'arpool'; % before conv1
 opts.pool2Layer = 'fc6'; % before conv1
 opts.DropOutRate = 0.85 ;
 opts.datasetFn = @cnn_ucf101_of_setup_data ;
-opts.networkFn = @cnn_resnext_init ;
+opts.networkFn = @cnn_init_resnext ;
+opts.network = [] ;
 
 opts.split = 1; % data split
 opts.reverseDyn = 0; % reverse video frames e.g.[N:-1:1]
@@ -71,20 +78,25 @@ end
 % -------------------------------------------------------------------------
 %                                                             Prepare model
 % -------------------------------------------------------------------------
-net = load(opts.modelPath);
-if isfield(net,'net')
-  net = net.net;
+if isempty(opts.network)
+  net = load(opts.modelPath);
+  if isfield(net,'net')
+    net = net.net;
+  end
+  opts.nCls = max(imdb.images.label) ;
+  % net = dagnn.DagNN.loadobj(net) ;
+  net = opts.networkFn(net,opts) ;
+  
+  % two channels instead of 3 RGB
+  net.params(1).value = net.params(1).value(:,:,1:2,:) ;
+  
+  % Set the class names in the network
+  net.meta.classes.name = imdb.classes.name ;
+  net.meta.classes.description = imdb.classes.name ;
+else
+  assert(isa(opts.network,'dagnn.DagNN')) ;
+  net = opts.network ;
 end
-opts.nCls = max(imdb.images.label) ;
-% net = dagnn.DagNN.loadobj(net) ;
-net = opts.networkFn(net,opts) ;
-
-% two channels instead of 3 RGB
-net.params(1).value = net.params(1).value(:,:,1:2,:) ; 
-
-% Set the class names in the network
-net.meta.classes.name = imdb.classes.name ;
-net.meta.classes.description = imdb.classes.name ;
 
 % -------------------------------------------------------------------------
 %                                                                     Learn

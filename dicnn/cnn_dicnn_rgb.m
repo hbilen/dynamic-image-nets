@@ -6,13 +6,20 @@ function [net, info] = cnn_dicnn_rgb(varargin)
 run(fullfile(fileparts(mfilename('fullpath')), ...
   '..', 'matconvnet', 'matlab', 'vl_setupnn.m')) ;
 
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  '..', 'matconvnet', 'contrib', 'mcnExtraLayers', 'setup_mcnExtraLayers.m')) ;
+
+run(fullfile(fileparts(mfilename('fullpath')), ...
+  '..', 'matconvnet', 'contrib', 'autonn', 'setup_autonn.m')) ;
+
 addpath Layers Datasets
 
 opts.dataDir = fullfile('data','UCF101') ;
 opts.expDir  = fullfile('exp', 'UCF101') ;
-opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat.mat');
+opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat');
 opts.datasetFn = @cnn_ucf101_setup_data ;
-opts.networkFn = @cnn_resnext_init ;
+opts.networkFn = @cnn_init_resnext ;
+opts.network = [] ;
 
 [opts, varargin] = vl_argparse(opts, varargin) ;
 
@@ -74,22 +81,27 @@ end
 % -------------------------------------------------------------------------
 %                                                             Prepare model
 % -------------------------------------------------------------------------
-net = load(opts.modelPath);
-if isfield(net,'net')
-  net = net.net;
-end
-opts.nCls = max(imdb.images.label) ;
-net = opts.networkFn(net,opts);
+if isempty(opts.network)
+  net = load(opts.modelPath);
+  if isfield(net,'net')
+    net = net.net;
+  end
+  opts.nCls = max(imdb.images.label) ;
+  net = opts.networkFn(net,opts);
 
-if numel(net.meta.normalization.averageImage)>3
-  sz = size(net.meta.normalization.averageImage) ;
-  net.meta.normalization.averageImage = ...
-    mean(reshape(net.meta.normalization.averageImage,[sz(1)*sz(2) sz(3)]),1) ;
-end
+  if numel(net.meta.normalization.averageImage)>3
+    sz = size(net.meta.normalization.averageImage) ;
+    net.meta.normalization.averageImage = ...
+      mean(reshape(net.meta.normalization.averageImage,[sz(1)*sz(2) sz(3)]),1) ;
+  end
 
-% Set the class names in the network
-net.meta.classes.name = imdb.classes.name ;
-net.meta.classes.description = imdb.classes.name ;
+  % Set the class names in the network
+  net.meta.classes.name = imdb.classes.name ;
+  net.meta.classes.description = imdb.classes.name ;
+else
+  assert(isa(opts.network,'dagnn.DagNN')) ;
+  net = opts.network ;
+end
 % -------------------------------------------------------------------------
 %                                                                     Learn
 % -------------------------------------------------------------------------
@@ -101,8 +113,8 @@ end
 opts.train.val = find(imdb.images.set==3) ;
 
 [net, info] = cnn_train_dicnn_dag(net, imdb, getBatchFn(opts, net.meta), ...
-                      'expDir', opts.expDir, ...
-                      opts.train) ;
+  'expDir', opts.expDir, ...
+  opts.train) ;
 
 % -------------------------------------------------------------------------
 function fn = getBatchFn(opts, meta)
