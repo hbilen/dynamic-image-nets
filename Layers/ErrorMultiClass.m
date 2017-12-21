@@ -3,14 +3,13 @@ classdef ErrorMultiClass < dagnn.Loss
   % computes multi-class accuracy
   % inputs{1} - > scores
   % inputs{2} - > gt labels
-  
-  properties (Transient)
+  properties
     nImgPerClass = []
     nCorPred = []
     accuracy = []
-%     average = 0
+    resetLayer = false 
   end
-  
+    
   methods
     function outputs = forward(obj, inputs, params)
       
@@ -20,10 +19,15 @@ classdef ErrorMultiClass < dagnn.Loss
       
       nCls = size(inputs{1},3);
       
-      if isempty(obj.nImgPerClass)
+      if obj.resetLayer || isempty(obj.nImgPerClass)
         obj.nImgPerClass = zeros(1,size(inputs{1},3));
         obj.nCorPred = zeros(1,size(inputs{1},3));
         obj.accuracy = zeros(1,size(inputs{1},3));
+        
+        if obj.resetLayer
+          obj.resetLayer = false ;
+          obj.average = 0 ;
+        end
       end
       
       
@@ -48,15 +52,17 @@ classdef ErrorMultiClass < dagnn.Loss
     end
     
     function reset(obj)
-      obj.nImgPerClass = [];
-      obj.nCorPred = [];
-      obj.accuracy = [];
-      obj.average = 0;
+%       obj.nImgPerClass = [];
+%       obj.nCorPred = [];
+%       obj.accuracy = [];
+%       obj.average = 0;
     end
     
     
     function obj = ErrorMultiClass(varargin)
       obj.load(varargin) ;
+      loss = 'error_multi_class' ;
+      
     end
   end
 end

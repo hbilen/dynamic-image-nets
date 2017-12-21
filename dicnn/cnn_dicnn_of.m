@@ -105,6 +105,7 @@ if opts.epochFactor>0
   opts.train.train = repmat(find(imdb.images.set==1),[1 opts.epochFactor]) ;
 else
   opts.train.train = NaN ;
+  opts.train.numEpochs = 1 ;
 end
 opts.train.val = find(imdb.images.set==3) ;
 
@@ -113,6 +114,24 @@ opts.train.val = find(imdb.images.set==3) ;
                       opts.train) ;
 
 
+% -------------------------------------------------------------------------
+%                                                          Report accuracy
+% -------------------------------------------------------------------------
+errlayer = net.getLayerIndex('errMC') ;
+
+if ~isnan(errlayer)
+  cats = imdb.classes.name ;
+  accs = net.layers(errlayer).block.accuracy ; 
+  
+  if numel(cats)~=numel(accs)
+    error('wrong number of classes\n') ;
+  end
+  
+  for i=1:numel(cats)
+    fprintf('%s acc %.1f\n',cats{i},100*accs(i)) ;
+  end
+  fprintf('Mean accuracy %.1f\n',100*mean(accs)) ;
+end
 % -------------------------------------------------------------------------
 function fn = getBatchFn(opts, meta)
 % -------------------------------------------------------------------------

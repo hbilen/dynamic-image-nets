@@ -103,6 +103,25 @@ opts.train.val = find(imdb.images.set==3) ;
                       opts.train) ;
 
 % -------------------------------------------------------------------------
+%                                                          Report accuracy
+% -------------------------------------------------------------------------
+errlayer = net.getLayerIndex('errMC') ;
+
+if ~isnan(errlayer)
+  cats = imdb.classes.name ;
+  accs = net.layers(errlayer).block.accuracy ; 
+  
+  if numel(cats)~=numel(accs)
+    error('wrong number of classes\n') ;
+  end
+  
+  for i=1:numel(cats)
+    fprintf('%s acc %.1f\n',cats{i},100*accs(i)) ;
+  end
+  fprintf('Mean accuracy %.1f\n',100*mean(accs)) ;
+end
+
+% -------------------------------------------------------------------------
 function fn = getBatchFn(opts, meta)
 % -------------------------------------------------------------------------
 useGpu = numel(opts.train.gpus) > 0 ;
