@@ -52,6 +52,7 @@ classdef ErrorMultiClass < dagnn.Loss
     end
     
     function reset(obj)
+      ojb.resetLayer = true ;
 %       obj.nImgPerClass = [];
 %       obj.nCorPred = [];
 %       obj.accuracy = [];
