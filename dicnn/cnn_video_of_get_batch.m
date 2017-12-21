@@ -156,12 +156,6 @@ for v=1:nVid
     si = si + 1 ;
   end
 
-  
-  if opts.subMean
-    meanImg = mean(mean(mean(imo(:,:,:,countv:countv+numel(images(vid))-1),1),2),4);
-    imo(:,:,:,countv:countv+numel(images(vid))-1) = ...
-      bsxfun(@minus, imo(:,:,:,countv:countv+numel(images(vid))-1), meanImg) ;
-  end
   countv = countv + numel(images(vid));
 end
 if ~isempty(opts.averageImage) && numel(opts.averageImage)==2

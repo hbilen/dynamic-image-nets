@@ -159,18 +159,11 @@ for v=1:nVid
     imo(:,:,:,si) = imt(sy,sx,:) ;
     si = si + 1 ;
   end
-  
-  if opts.subMean
-    meanImg = mean(mean(mean(imo(:,:,:,countv:countv+numel(images(vid))-1),1),2),4);
-    imo(:,:,:,countv:countv+numel(images(vid))-1) = ...
-      bsxfun(@minus, imo(:,:,:,countv:countv+numel(images(vid))-1), meanImg) ;
-  end
   countv = countv + numel(images(vid));
 
 end
 
 if ~isempty(opts.averageImage) && numel(opts.averageImage)==3
-  
   if ~isempty(opts.rgbVariance)
     imo = bsxfun(@minus, imo, opts.averageImage+reshape(opts.rgbVariance * randn(3,1), 1,1,3)) ;
   else

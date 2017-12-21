@@ -109,6 +109,7 @@ if opts.epochFactor>0
   opts.train.train = repmat(find(imdb.images.set==1),[1 opts.epochFactor]) ;
 else
   opts.train.train = NaN ;
+  opts.train.numEpochs = 1 ;
 end
 opts.train.val = find(imdb.images.set==3) ;
 
@@ -254,8 +255,7 @@ end
 images = strcat([imdb.imageDir filesep], horzcat(namesM{:}) ) ;
 
 im = cnn_video_rgb_get_batch(images, VideoId1, opts, ...
-  'transformation', transformation, 'prefetch', nargout == 0, ...
-  'subMean', false) ;
+  'transformation', transformation, 'prefetch', nargout == 0) ;
 
 if nargout > 0
   if useGpu

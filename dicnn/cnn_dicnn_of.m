@@ -148,11 +148,6 @@ end
 
 bopts.averageImage = 128 * ones([1 1 2],'single') ;
 bopts.numDynImgs = opts.numDynImgs ;
-% bopts.averageImage = meta.normalization.averageImage ;
-% bopts.rgbVariance = meta.augmentation.rgbVariance ;
-% bopts.transformation = meta.augmentation.transformation ;
-bopts.transformation = 'stretch' ;
-bopts.transformation = 'multiScaleRegular' ;
 
 fn = @(x,y) getDagNNBatch(bopts,useGpu,x,y) ;
 
@@ -247,8 +242,7 @@ end
 images = strcat([imdb.imageDir filesep], horzcat(namesM{:}) ) ;
 
 im = cnn_video_of_get_batch(images, VideoId1, opts, ...
-  'transformation', transformation, 'prefetch', nargout == 0, ...
-  'subMean', false) ;
+  'transformation', transformation, 'prefetch', nargout == 0) ;
 
 if nargout > 0
   if useGpu
