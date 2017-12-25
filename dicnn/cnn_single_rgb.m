@@ -12,7 +12,7 @@ opts.dataDir = fullfile('data','UCF101') ;
 opts.expDir  = fullfile('exp', 'UCF101') ;
 opts.modelPath = fullfile('models','resnext_50_32x4d-pt-mcn.mat');
 opts.datasetFn = @cnn_ucf101_setup_data ;
-opts.networkFn = @cnn_resnext_init ;
+opts.networkFn = @cnn_init_resnext ;
 opts.pool1Type = 'none' ;
 opts.pool1Layer = 'conv1' ;
 opts.pool2Layer = '' ;
@@ -223,7 +223,7 @@ end
 
 images = strcat([imdb.imageDir filesep], horzcat(namesM{:}) ) ;
 
-im = cnn_video_get_batch(images, VideoId1, opts, ...
+im = cnn_video_rgb_get_batch(images, VideoId1, opts, ...
   'transformation', transformation, 'prefetch', nargout == 0, ...
   'subMean', false) ;
 
