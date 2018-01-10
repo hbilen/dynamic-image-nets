@@ -1,8 +1,8 @@
 classdef ErrorMultiClass < dagnn.Loss
-  % author: Hakan Bilen
-  % computes multi-class accuracy
-  % inputs{1} - > scores
-  % inputs{2} - > gt labels
+% author: Hakan Bilen
+% computes multi-class accuracy
+% inputs{1}->scores
+% inputs{2}->gt labels
   properties
     nImgPerClass = []
     nCorPred = []
@@ -62,8 +62,7 @@ classdef ErrorMultiClass < dagnn.Loss
     
     function obj = ErrorMultiClass(varargin)
       obj.load(varargin) ;
-      loss = 'error_multi_class' ;
-      
+      obj.loss = 'error_multi_class' ;
     end
   end
 end
