@@ -73,13 +73,14 @@ Alternatively, you can download RGB and precomputed optical flow frames from [Ch
   visualize_approximate_dynamic_images(images)
   ```
 
-## Training 
-1. Write your own `cnn_dataset_setup_data` or `cnn_ucf101_setup_data` to build your database (imdb):
-2. Now you can train your model by running 
-
+## Train a Dynamic Image Net
+You can modify the options in `main_train.m` and train your model by running
     ```matlab
     main_train
     ```
+    
+Note: If you want to train a model on a different dataset than UCF101 or HMDB51, you need to write a custom script `cnn_dataset_setup_data` to build your database (imdb).
+
 ## Evaluation
 1. Download the CNN Models for the UCF101 dataset, that are used in the journal, from [here](http://groups.inf.ed.ac.uk/hbilen-data/data/resnext50_dicnn.tar).
 2. Choose the right model, split and input type (e.g.)
@@ -110,6 +111,7 @@ If you find the code useful, please cite:
           journal   = " IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)",
           year      = "2017"
         }
+
 ## License
 The analysis work performed with the program(s) must be non-proprietary work. Licensee and its contract users must be or be affiliated with an academic facility. Licensee may additionally permit individuals who are students at such academic facility to access and use the program(s). Such students will be considered contract users of licensee. The program(s) may not be used for commercial competitive analysis (such as benchmarking) or for any commercial activity, including consulting.
 
